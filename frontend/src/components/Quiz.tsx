@@ -20,24 +20,69 @@ const Quiz = () => {
     setAnswers((prev) => ({ ...prev, [question]: answer }));
   };
 
-  const handleSubmit = async () => {
-    if (!userId) {
-      alert("Please enter a User ID");
-      return;
+//   const handleSubmit = async () => {
+//     if (!userId) {
+//       alert("Please enter a User ID");
+//       return;
+//     }
+
+//     setLoading(true);
+
+//     try {
+//       const response = await fetch("/api/quiz", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ user_id: userId, answers }),
+//       });
+
+//       const data = await response.json();
+    
+//     console.log("API Response:", data); // ✅ Debugging step
+
+//     if (!response.ok) {
+//       throw new Error(data.error || "Unknown error occurred.");
+//     }
+
+//     setScore(data.score);
+//     setAnalysis(data.analysis);
+//   } catch (error) {
+//     console.error("Error submitting quiz:", error);
+//     if (error instanceof Error) {
+//       alert(`Failed to submit quiz: ${error.message}`);
+//     } else {
+//       alert("Failed to submit quiz: An unknown error occurred.");
+//     }
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const handleSubmit = async () => {
+  if (!userId) {
+    alert("Please enter a User ID");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await fetch("/api/quiz", {  // ✅ Ensure this is the correct API route
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: userId, answers }),
+    });
+
+    const text = await response.text();
+    console.log("📌 Raw API Response:", text); // ✅ Debugging
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      throw new Error("Invalid JSON response from Next.js API route.");
     }
 
-    setLoading(true);
-
-    try {
-      const response = await fetch("/api/quiz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId, answers }),
-      });
-
-      const data = await response.json();
-    
-    console.log("API Response:", data); // ✅ Debugging step
+    console.log("📌 Parsed API Response:", data); // ✅ Debugging
 
     if (!response.ok) {
       throw new Error(data.error || "Unknown error occurred.");
@@ -46,7 +91,7 @@ const Quiz = () => {
     setScore(data.score);
     setAnalysis(data.analysis);
   } catch (error) {
-    console.error("Error submitting quiz:", error);
+    console.error("🚨 Error in frontend handleSubmit:", error);
     if (error instanceof Error) {
       alert(`Failed to submit quiz: ${error.message}`);
     } else {
@@ -56,6 +101,7 @@ const Quiz = () => {
     setLoading(false);
   }
 };
+
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white shadow-lg rounded-lg">

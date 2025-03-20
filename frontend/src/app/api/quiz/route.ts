@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 
     console.log("Forwarding request to backend:", { user_id, answers }); // Debugging log
     
-    const response = await fetch("http://localhost:8000/quiz/submit", { //Update this to AWS
+    const response = await fetch("http://localhost:5000/quiz/submit", { //Update this to AWS
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id, answers }),
